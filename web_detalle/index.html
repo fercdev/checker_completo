@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERVICE HEALTH CHECKER</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Status del servicio backendInicial:</h1>
+
+    <div id="status-container"></div>
+
+    <script>
+        const socket = io('http://localhost:4000');
+
+        socket.on('connect', () => {
+            console.log('Connected to socket....')
+        })
+
+        socket.on('connect_error', () => {
+            console.log('Connect failed....')
+        })
+
+        socket.on('status_updated', (data) => {
+            console.log('Evento escuchando una actualizacion de status:', data);
+
+            const statusDiv = document.createElement('div');
+            statusDiv.innerText = `${new Date().toLocaleTimeString()} -- ${data.service} -- ${data.status}`
+            document.getElementById('status-container').appendChild(statusDiv);
+        })
+    </script>
+    
+</body>
+</html>

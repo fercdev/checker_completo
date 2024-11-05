@@ -1,0 +1,31 @@
+services:
+  backend_inicial:
+    build:
+      context: ./backend_inicial
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  service_monitor:
+    build:
+      context: ./service_monitor
+      dockerfile: Dockerfile
+    environment:
+      REDIS_HOST: redis
+      BACKEND_INICIAL_HOST: backend_inicial
+    ports:
+      - 4000:4000
+    depends_on:
+      - redis
+      - backend_inicial
+  web_nginx:
+    image: nginx:alpine
+    volumes:
+      - ./web_detalle/index.html:/usr/share/nginx/html/index.html
+      - ./web_detalle/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 8080:80
+    
